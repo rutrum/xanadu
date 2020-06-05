@@ -1,2 +1,2 @@
-pub mod world;
 pub mod commands;
+pub mod world;

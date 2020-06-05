@@ -1,0 +1,41 @@
+{
+    "name": "The Badlands",
+    "locales": [
+        {
+            "name": "Forest",
+            "description": "Sunlight falls through the leaves.",
+            "dirs": {
+                "north": "Deep Forest",
+                "south": "Spooky House"
+            }
+        },
+        {
+            "name": "Spooky House",
+            "description": "The floors creek!",
+            "dirs": {
+                "north": "Forest"
+            },
+            "items": [
+                {
+                    "name": "candle",
+                    "description": "It's rather short."
+                }
+            ]
+        },
+        {
+            "name": "Deep Forest",
+            "description": "The trees here are very dense.",
+            "dirs": {
+                "south": "Forest",
+                "west": "Deep Forest"
+            }
+        },
+        {
+            "name": "Crater",
+            "description": "It is so deep you cannot see the bottom.",
+            "dirs": {
+                "east": "Deep Forest"
+            }
+        }
+    ]
+}
