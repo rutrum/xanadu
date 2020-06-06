@@ -6,7 +6,7 @@ use std::str::FromStr;
 use serde_json::Value;
 
 use locale::{LocaleBuilder, Locale};
-use crate::{Direction, Item, ItemMap};
+use crate::{Direction, item::{Item, ItemMap}};
 
 pub struct WorldBuilder {
     name: String,

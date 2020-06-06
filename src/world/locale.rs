@@ -1,5 +1,4 @@
 use crate::Direction;
-use crate::Item;
 use std::collections::HashMap;
 use std::fmt;
 
@@ -8,17 +7,11 @@ pub struct LocaleBuilder {
     pub name: String,
     pub description: String,
     pub adjacent: HashMap<Direction, String>,
-    pub items: Vec<Item>,
 }
 
 impl LocaleBuilder {
     pub fn new() -> LocaleBuilder {
         Default::default()
-    }
-
-    pub fn add_item(mut self, i: Item) -> LocaleBuilder {
-        self.items.push(i);
-        self
     }
 
     pub fn add_adjacent(mut self, dir: Direction, key: &str) -> LocaleBuilder {
@@ -45,7 +38,6 @@ impl LocaleBuilder {
             name: self.name,
             description: self.description,
             adjacent: self.adjacent,
-            items: self.items,
         }
     }
 }
@@ -55,7 +47,6 @@ pub struct Locale {
     name: String,
     description: String,
     adjacent: HashMap<Direction, String>,
-    items: Vec<Item>,
 }
 
 impl Locale {

@@ -1,11 +1,13 @@
 use std::str::FromStr;
 use xanadu::commands::Command;
 use xanadu::world::WorldBuilder;
+use xanadu::player::Player;
 
 fn main() {
     println!("*** Welcome to Xanadu ***");
     let mut badlands = WorldBuilder::from_file("badlands.json").build();
     let mut current = "Forest".to_string();
+    let mut player = Player::new();
 
     loop {
         badlands.print_current(&current);
@@ -18,13 +20,22 @@ fn main() {
             Ok(command) => match command {
                 Command::Look => println!("There's nothing to see!"),
                 Command::Help => println!("Open your eyes"),
-                Command::Inventory => println!("Unimplemented"),
+                Command::Inventory => {
+                    player.print_inv();
+                }
                 Command::Move(dir) => match badlands.next_locale(&current, dir) {
                     Some(a) => current = a,
                     None => println!("Can't go that way!"),
                 },
+                Command::Describe(item_str) => match player.item_description(&item_str) {
+                    Some(desc) => println!("{}", desc),
+                    None => println!("Not sure what item you are talking about."),
+                }
                 Command::Take(item) => match badlands.take_item(&current, &item) {
-                    Some(i) => println!("You picked up the {}.", i.name),
+                    Some(i) => {
+                        println!("You picked up the {}.", i.name);
+                        player.add_item(i);
+                    }
                     None => println!("That's not something you can take."),
                 },
             },

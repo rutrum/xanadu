@@ -4,6 +4,7 @@ use std::str::FromStr;
 pub enum Command {
     Move(Direction),
     Take(String),
+    Describe(String),
     Look,
     Inventory,
     Help,
@@ -27,6 +28,7 @@ impl FromStr for Command {
                     Ok(dir) => Ok(Move(dir)),
                 },
                 "t" | "take" => Ok(Take(words[1].to_string())),
+                "d" | "describe" => Ok(Describe(words[1].to_string())),
                 _ => Err("That is not a valid command."),
             },
             _ => Err("Type something!"),
