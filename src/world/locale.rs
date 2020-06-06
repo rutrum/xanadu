@@ -1,49 +1,79 @@
+use crate::Direction;
+use crate::Item;
 use std::collections::HashMap;
-use super::Direction;
+use std::fmt;
 
-#[derive(Debug)]
-pub struct Locale {
+#[derive(Default, Debug)]
+pub struct LocaleBuilder {
     pub name: String,
     pub description: String,
     pub adjacent: HashMap<Direction, String>,
     pub items: Vec<Item>,
 }
 
+impl LocaleBuilder {
+    pub fn new() -> LocaleBuilder {
+        Default::default()
+    }
+
+    pub fn add_item(mut self, i: Item) -> LocaleBuilder {
+        self.items.push(i);
+        self
+    }
+
+    pub fn add_adjacent(mut self, dir: Direction, key: &str) -> LocaleBuilder {
+        self.adjacent.insert(dir, key.to_string());
+        self
+    }
+
+    pub fn with_description(self, description: &str) -> LocaleBuilder {
+        LocaleBuilder {
+            description: description.to_string(),
+            ..self
+        }
+    }
+
+    pub fn with_name(self, name: &str) -> LocaleBuilder {
+        LocaleBuilder {
+            name: name.to_string(),
+            ..self
+        }
+    }
+
+    pub fn build(self) -> Locale {
+        Locale {
+            name: self.name,
+            description: self.description,
+            adjacent: self.adjacent,
+            items: self.items,
+        }
+    }
+}
+
 #[derive(Debug)]
-pub struct Item {
-    pub name: String,
-    pub description: String,
+pub struct Locale {
+    name: String,
+    description: String,
+    adjacent: HashMap<Direction, String>,
+    items: Vec<Item>,
 }
 
 impl Locale {
-    pub fn new(name: &str, description: &str) -> Locale {
-        Locale {
-            name: name.to_string(),
-            description: description.to_string(),
-            adjacent: HashMap::new(),
-            items: Vec::new(),
-        }
+    /// Returns the name of the locale used in hashmaps
+    pub fn key(&self) -> String {
+        self.name.clone()
     }
 
-    pub fn add_adj(&mut self, dir: Direction, name: &str) {
-        self.adjacent.insert(dir, name.to_string());
+    /// Returns the name of the locale in the given direction if 
+    /// that locale exists
+    pub fn get_adjacent(&self, dir: Direction) -> Option<String> {
+        self.adjacent.get(&dir).map(String::to_string)
     }
+}
 
-    pub fn print(&self) {
-        println!("You are at the {}.", self.name);
-        println!("{}", self.description);
-        for i in &self.items {
-            println!("You see a {}.", i.name);
-        }
-    }
-
-    pub fn take_item(&mut self, item_str: &str) -> Option<Item> {
-        if let Some(index) = self.items.iter()
-            .position(|x| *x.name.to_lowercase() == item_str.to_lowercase()) 
-        {
-            Some(self.items.remove(index))
-        } else {
-            None
-        }
+impl fmt::Display for Locale {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "You are at the {}.", self.name)?;
+        write!(f, "{}", self.description)
     }
 }

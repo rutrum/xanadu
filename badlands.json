@@ -4,36 +4,45 @@
         {
             "name": "Forest",
             "description": "Sunlight falls through the leaves.",
-            "dirs": {
+            "adjacent": {
                 "north": "Deep Forest",
                 "south": "Spooky House"
-            }
+            },
+            "items": [
+                {
+                    "name": "Apple",
+                    "description": "It's green.",
+                    "find": "You see a fruit hanging from a branch.",
+                    "aliases": [ "fruit" ]
+                }
+            ]
         },
         {
             "name": "Spooky House",
             "description": "The floors creek!",
-            "dirs": {
+            "adjacent": {
                 "north": "Forest"
             },
             "items": [
                 {
-                    "name": "candle",
-                    "description": "It's rather short."
+                    "name": "Candle",
+                    "description": "It's rather short.",
+                    "find": "There is a still lit candle on the table."
                 }
             ]
         },
         {
             "name": "Deep Forest",
             "description": "The trees here are very dense.",
-            "dirs": {
+            "adjacent": {
                 "south": "Forest",
-                "west": "Deep Forest"
+                "west": "Crater"
             }
         },
         {
             "name": "Crater",
             "description": "It is so deep you cannot see the bottom.",
-            "dirs": {
+            "adjacent": {
                 "east": "Deep Forest"
             }
         }

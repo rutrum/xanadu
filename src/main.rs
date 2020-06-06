@@ -1,10 +1,10 @@
 use std::str::FromStr;
 use xanadu::commands::Command;
-use xanadu::world::World;
+use xanadu::world::WorldBuilder;
 
 fn main() {
     println!("*** Welcome to Xanadu ***");
-    let mut badlands = World::from_file("badlands.json");
+    let mut badlands = WorldBuilder::from_file("badlands.json").build();
     let mut current = "Forest".to_string();
 
     loop {
@@ -26,7 +26,7 @@ fn main() {
                 Command::Take(item) => match badlands.take_item(&current, &item) {
                     Some(i) => println!("You picked up the {}.", i.name),
                     None => println!("That's not something you can take."),
-                }
+                },
             },
         }
     }
