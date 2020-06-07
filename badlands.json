@@ -28,6 +28,13 @@
                     "name": "Candle",
                     "description": "It's rather short.",
                     "find": "There is a still lit candle on the table."
+                },
+                {
+                    "name": "Letter",
+                    "description": "Handwritten letter to a loved one.",
+                    "find": "A piece of paper is on the floor",
+                    "aliases": [ "paper" ],
+                    "read": "Dear Jessica, you are a cold hearted bitch.  Not even your death will make up for your idiocy. -Daniel"
                 }
             ]
         },

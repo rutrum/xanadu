@@ -5,6 +5,7 @@ pub mod item;
 
 use convert_case::{Case, Casing};
 use std::str::FromStr;
+use std::fmt;
 
 #[derive(Debug, Hash, Eq, PartialEq)]
 pub enum Direction {
@@ -12,6 +13,8 @@ pub enum Direction {
     South,
     East,
     West,
+    Up,
+    Down,
 }
 
 impl FromStr for Direction {
@@ -22,7 +25,22 @@ impl FromStr for Direction {
             "s" | "south" => Ok(Direction::South),
             "e" | "east" => Ok(Direction::East),
             "w" | "west" => Ok(Direction::West),
+            "u" | "up" => Ok(Direction::Up),
+            "d" | "down" => Ok(Direction::Down),
             _ => Err(()),
+        }
+    }
+}
+
+pub enum MovementError {
+    NoExist,
+}
+
+impl fmt::Display for MovementError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        use MovementError::*;
+        match self {
+            NoExist => write!(f, "You can't go that way."),
         }
     }
 }

@@ -12,17 +12,22 @@ impl ItemMap {
         Default::default()
     }
 
-    pub fn take(&mut self, current: &str, item_str: &str) -> Option<Item> {
-        self.items.get_mut(current).map(|items| {
-            items
-                .iter()
-                .find(|x| x.name == item_str || x.aliases.contains(&item_str.to_string()))
-                .cloned() // Be sure to clone the insides..not just the option!
-                .map(|item| {
-                    // Found ref to item, now remove it
-                    items.take(&item)
-                }).flatten()
-        }).flatten()
+    pub fn take(&mut self, current: &str, item_str: &str) -> Result<Item, ItemError> {
+        let items = self.items.get_mut(current).ok_or(ItemError::NoExist)?;
+        let item = items
+            .iter()
+            .find(|x| x.name == item_str || x.aliases.contains(&item_str.to_string()))
+            .ok_or(ItemError::NoExist)?
+            .clone();
+        Ok(items.take(&item).unwrap())
+    }
+
+    pub fn get(&self, current: &str, item_str: &str) -> Result<&Item, ItemError> {
+        let items = self.items.get(current).ok_or(ItemError::NoExist)?;
+        items
+            .iter()
+            .find(|x| x.name == item_str || x.aliases.contains(&item_str.to_string()))
+            .ok_or(ItemError::NoExist)
     }
 
     pub fn put(&mut self, key: &str, item: Item) {
@@ -54,6 +59,19 @@ pub struct Item {
     pub description: String,
     pub aliases: Vec<String>,
     pub find: String,
+    pub read: Option<String>,
+}
+
+impl Item {
+
+    /// Returns the name of the Item with "a" or "an" preceding it
+    pub fn article_name(&self) -> String {
+        if "aeiou".contains(self.name.chars().next().unwrap()) {
+            format!("an {}", self.name)
+        } else {
+            format!("a {}", self.name)
+        }
+    }
 }
 
 impl fmt::Display for Item {
@@ -62,5 +80,20 @@ impl fmt::Display for Item {
             self.name.to_case(Case::Title),
             self.description
         )
+    }
+}
+
+pub enum ItemError {
+    NoExist,
+    CannotRead,
+}
+
+impl fmt::Display for ItemError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        use ItemError::*;
+        match self {
+            NoExist => write!(f, "Not sure what item you are talking about."),
+            CannotRead => write!(f, "You can't read that."),
+        }
     }
 }

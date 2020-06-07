@@ -6,7 +6,8 @@ use std::str::FromStr;
 use serde_json::Value;
 
 use locale::{LocaleBuilder, Locale};
-use crate::{Direction, item::{Item, ItemMap}};
+use crate::{Direction, item::{Item, ItemError, ItemMap}};
+use crate::MovementError;
 
 pub struct WorldBuilder {
     name: String,
@@ -64,6 +65,7 @@ impl WorldBuilder {
                             description: item["description"].as_str().unwrap().to_string(),
                             aliases: item["aliases"].as_array().unwrap_or(&Vec::new()).clone().iter().map(|x| x.as_str().unwrap().to_string().to_lowercase()).collect(),
                             find: item["find"].as_str().unwrap().to_string(),
+                            read: item["read"].as_str().map(|x| x.to_string()),
                         };
                         w.items.put(key, i);
                     }
@@ -105,12 +107,16 @@ impl World {
         self.items.print_at(current);
     }
 
-    pub fn take_item(&mut self, current: &str, item: &str) -> Option<Item> {
+    pub fn take_item(&mut self, current: &str, item: &str) -> Result<Item, ItemError> {
         self.items.take(current, item)
     }
 
-    pub fn next_locale(&self, current: &str, dir: Direction) -> Option<String> {
+    pub fn next_locale(&self, current: &str, dir: Direction) -> Result<String, MovementError> {
         let locale = &self.locales.get(&current.to_string()).unwrap();
         locale.get_adjacent(dir)
+    }
+
+    pub fn get_item(&self, current: &str, item: &str) -> Result<&Item, ItemError> {
+        self.items.get(current, item)
     }
 }

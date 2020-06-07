@@ -1,4 +1,4 @@
-use crate::item::Item;
+use crate::item::{Item, ItemError};
 use std::collections::HashSet;
 
 pub type Inventory = HashSet<Item>;
@@ -17,28 +17,40 @@ impl Player {
     pub fn add_item(&mut self, item: Item) {
         self.inventory.insert(item);
     }
-
-    pub fn remove_item(&mut self, item_str: &str) -> Option<Item> {
-        self.inventory
+    pub fn remove_item(&mut self, item_str: &str) -> Result<Item, ItemError> {
+        let item = self.inventory 
             .iter()
             .find(|x| x.name == item_str || x.aliases.contains(&item_str.to_string()))
-            .cloned() // Be sure to clone the insides..not just the option!
-            .map(|item| {
-                // Found ref to item, now remove it
-                self.inventory.take(&item)
-            }).flatten()
+            .ok_or(ItemError::NoExist)?
+            .clone();
+        Ok(self.inventory.take(&item).unwrap())
     }
 
-    pub fn item_description(&self, item_str: &str) -> Option<&str> {
+    pub fn item_description(&self, item_str: &str) -> Result<&str, ItemError> {
+        let desc = self.inventory
+            .iter()
+            .find(|x| x.name == item_str || x.aliases.contains(&item_str.to_string()))
+            .ok_or(ItemError::NoExist)?
+            .description
+            .as_str();
+        Ok(desc)
+    }
+
+    pub fn read_item(&self, item_str: &str) -> Result<&String, ItemError> {
         self.inventory
             .iter()
             .find(|x| x.name == item_str || x.aliases.contains(&item_str.to_string()))
-            .map(|x| x.description.as_str())
+            .ok_or(ItemError::NoExist)?
+            .read.as_ref()
+            .ok_or(ItemError::CannotRead)
     }
 
     pub fn print_inv(&self) {
         match self.inventory.len() {
-            0 => println!("Your pockets are empty."),
+            0 => println!("You don't have anything on you."),
+            1 => {
+                println!("You have {}.", self.inventory.iter().next().unwrap().article_name())
+            }
             _ => {
                 let mut list = String::new(); 
                 for (i, item) in self.inventory.iter().enumerate() {
@@ -47,13 +59,7 @@ impl Player {
                     } else {
                         list.push(' ');
                     }
-
-                    if "aeiou".contains(item.name.chars().next().unwrap()) {
-                        list.push_str("an ");
-                    } else {
-                        list.push_str("a ");
-                    }
-                    list.push_str(&item.name);
+                    list.push_str(&item.article_name())
                 }
                 println!("You have{}.", list);
             }

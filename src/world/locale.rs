@@ -1,4 +1,4 @@
-use crate::Direction;
+use crate::{Direction, MovementError};
 use std::collections::HashMap;
 use std::fmt;
 
@@ -57,8 +57,8 @@ impl Locale {
 
     /// Returns the name of the locale in the given direction if 
     /// that locale exists
-    pub fn get_adjacent(&self, dir: Direction) -> Option<String> {
-        self.adjacent.get(&dir).map(String::to_string)
+    pub fn get_adjacent(&self, dir: Direction) -> Result<String, MovementError> {
+        self.adjacent.get(&dir).map(String::to_string).ok_or(MovementError::NoExist)
     }
 }
 
