@@ -1,13 +1,16 @@
 pub mod locale;
 
+use serde_json::Value;
 use std::collections::HashMap;
 use std::fs;
 use std::str::FromStr;
-use serde_json::Value;
 
-use locale::{LocaleBuilder, Locale};
-use crate::{Direction, item::{Item, ItemError, ItemMap}};
 use crate::MovementError;
+use crate::{
+    item::{Item, ItemError, ItemMap},
+    Direction,
+};
+use locale::{Locale, LocaleBuilder};
 
 pub struct WorldBuilder {
     name: String,
@@ -29,10 +32,14 @@ impl WorldBuilder {
     }
 
     pub fn build(self) -> World {
-        let locales = self.locales.into_iter().map(|(x, lb)| (x, lb.build())).collect();
-        World { 
+        let locales = self
+            .locales
+            .into_iter()
+            .map(|(x, lb)| (x, lb.build()))
+            .collect();
+        World {
             name: self.name,
-            locales: locales,
+            locales,
             items: self.items,
         }
     }
@@ -51,10 +58,8 @@ impl WorldBuilder {
 
                 if let Value::Object(dirs) = &raw["adjacent"] {
                     for (dir, loc) in dirs {
-                        lb = lb.add_adjacent(
-                            Direction::from_str(dir).unwrap(),
-                            loc.as_str().unwrap(),
-                        )
+                        lb = lb
+                            .add_adjacent(Direction::from_str(dir).unwrap(), loc.as_str().unwrap())
                     }
                 }
 
@@ -63,7 +68,13 @@ impl WorldBuilder {
                         let i = Item {
                             name: item["name"].as_str().unwrap().to_string().to_lowercase(),
                             description: item["description"].as_str().unwrap().to_string(),
-                            aliases: item["aliases"].as_array().unwrap_or(&Vec::new()).clone().iter().map(|x| x.as_str().unwrap().to_string().to_lowercase()).collect(),
+                            aliases: item["aliases"]
+                                .as_array()
+                                .unwrap_or(&Vec::new())
+                                .clone()
+                                .iter()
+                                .map(|x| x.as_str().unwrap().to_string().to_lowercase())
+                                .collect(),
                             find: item["find"].as_str().unwrap().to_string(),
                             read: item["read"].as_str().map(|x| x.to_string()),
                         };

@@ -21,8 +21,10 @@
             "name": "Spooky House",
             "description": "The floors creek!",
             "adjacent": {
-                "north": "Forest"
+                "north": "Forest",
+                "up": "Spooky Attic"
             },
+            "locations": [ "table" ],
             "items": [
                 {
                     "name": "Candle",
@@ -37,6 +39,13 @@
                     "read": "Dear Jessica, you are a cold hearted bitch.  Not even your death will make up for your idiocy. -Daniel"
                 }
             ]
+        },
+        {
+            "name": "Spooky Attic",
+            "description": "There is enough sunlight from the window to see everything here.",
+            "adjacent": {
+                "down": "Spooky House"
+            }
         },
         {
             "name": "Deep Forest",

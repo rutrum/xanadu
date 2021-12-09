@@ -55,10 +55,13 @@ impl Locale {
         self.name.clone()
     }
 
-    /// Returns the name of the locale in the given direction if 
+    /// Returns the name of the locale in the given direction if
     /// that locale exists
     pub fn get_adjacent(&self, dir: Direction) -> Result<String, MovementError> {
-        self.adjacent.get(&dir).map(String::to_string).ok_or(MovementError::NoExist)
+        self.adjacent
+            .get(&dir)
+            .map(String::to_string)
+            .ok_or(MovementError::NoExist)
     }
 }
 

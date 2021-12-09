@@ -1,5 +1,6 @@
-use std::collections::{HashSet, HashMap};
-use convert_case::{Casing, Case};
+use convert_case::{Case, Casing};
+use std::collections::{HashMap, HashSet};
+use std::error::Error;
 use std::fmt;
 
 #[derive(Default, Debug)]
@@ -52,7 +53,6 @@ impl ItemMap {
     }
 }
 
-
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
 pub struct Item {
     pub name: String,
@@ -63,7 +63,6 @@ pub struct Item {
 }
 
 impl Item {
-
     /// Returns the name of the Item with "a" or "an" preceding it
     pub fn article_name(&self) -> String {
         if "aeiou".contains(self.name.chars().next().unwrap()) {
@@ -76,17 +75,22 @@ impl Item {
 
 impl fmt::Display for Item {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}: {}", 
+        write!(
+            f,
+            "{}: {}",
             self.name.to_case(Case::Title),
             self.description
         )
     }
 }
 
+#[derive(Debug)]
 pub enum ItemError {
     NoExist,
     CannotRead,
 }
+
+impl Error for ItemError {}
 
 impl fmt::Display for ItemError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

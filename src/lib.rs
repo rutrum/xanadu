@@ -1,11 +1,12 @@
 pub mod commands;
+pub mod item;
 pub mod player;
 pub mod world;
-pub mod item;
 
 use convert_case::{Case, Casing};
-use std::str::FromStr;
+use std::error::Error;
 use std::fmt;
+use std::str::FromStr;
 
 #[derive(Debug, Hash, Eq, PartialEq)]
 pub enum Direction {
@@ -32,9 +33,12 @@ impl FromStr for Direction {
     }
 }
 
+#[derive(Debug)]
 pub enum MovementError {
     NoExist,
 }
+
+impl Error for MovementError {}
 
 impl fmt::Display for MovementError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

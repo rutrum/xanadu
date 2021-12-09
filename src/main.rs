@@ -1,8 +1,8 @@
-use std::str::FromStr;
 use std::io::{stdout, Write};
+use std::str::FromStr;
 use xanadu::commands::Command;
-use xanadu::world::WorldBuilder;
 use xanadu::player::Player;
+use xanadu::world::WorldBuilder;
 
 fn main() {
     println!("X A N A D U\n");
@@ -38,7 +38,7 @@ fn main() {
                 Command::Examine(item_str) => match player.item_description(&item_str) {
                     Ok(desc) => println!("{}", desc),
                     Err(e) => println!("{}", e),
-                }
+                },
                 Command::Take(item) => match badlands.take_item(&current, &item) {
                     Ok(i) => {
                         println!("You picked up the {}.", i.name);
@@ -51,7 +51,7 @@ fn main() {
                         println!("{}", msg);
                     }
                     Err(e) => println!("{}", e),
-                }
+                },
             },
         }
     }

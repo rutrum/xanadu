@@ -18,7 +18,8 @@ impl Player {
         self.inventory.insert(item);
     }
     pub fn remove_item(&mut self, item_str: &str) -> Result<Item, ItemError> {
-        let item = self.inventory 
+        let item = self
+            .inventory
             .iter()
             .find(|x| x.name == item_str || x.aliases.contains(&item_str.to_string()))
             .ok_or(ItemError::NoExist)?
@@ -27,7 +28,8 @@ impl Player {
     }
 
     pub fn item_description(&self, item_str: &str) -> Result<&str, ItemError> {
-        let desc = self.inventory
+        let desc = self
+            .inventory
             .iter()
             .find(|x| x.name == item_str || x.aliases.contains(&item_str.to_string()))
             .ok_or(ItemError::NoExist)?
@@ -41,18 +43,20 @@ impl Player {
             .iter()
             .find(|x| x.name == item_str || x.aliases.contains(&item_str.to_string()))
             .ok_or(ItemError::NoExist)?
-            .read.as_ref()
+            .read
+            .as_ref()
             .ok_or(ItemError::CannotRead)
     }
 
     pub fn print_inv(&self) {
         match self.inventory.len() {
             0 => println!("You don't have anything on you."),
-            1 => {
-                println!("You have {}.", self.inventory.iter().next().unwrap().article_name())
-            }
+            1 => println!(
+                "You have {}.",
+                self.inventory.iter().next().unwrap().article_name()
+            ),
             _ => {
-                let mut list = String::new(); 
+                let mut list = String::new();
                 for (i, item) in self.inventory.iter().enumerate() {
                     if i == self.inventory.len() - 1 {
                         list.push_str(" and ");
@@ -73,5 +77,7 @@ pub enum State {
 }
 
 impl Default for State {
-    fn default() -> State { State::Alive }
+    fn default() -> State {
+        State::Alive
+    }
 }
